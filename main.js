@@ -1,4 +1,5 @@
 
+var eventBus = new Vue();
 
 Vue.component("product-review", {
     template:`
@@ -59,7 +60,7 @@ Vue.component("product-review", {
                     rating: this.rating
                 }
     
-                this.$emit("review-submitted", productReview)
+                eventBus.$emit("review-submitted", productReview)
     
                 this.name = null
                 this.review = null
@@ -150,9 +151,7 @@ Vue.component('product', {
             this.selectedVariant = index;
             console.log(index);
         },
-        addReview(productReview){
-            this.reviews.push(productReview);
-        }
+
     },
     computed:{
         title(){
@@ -170,6 +169,11 @@ Vue.component('product', {
             }else{
                 return "2.99"
             }
+        },
+        mounted(){
+            eventBus.$on("review-submitted", productReview =>{
+                this.reviews.push(productReview);
+            })
         }
     },
 
@@ -207,8 +211,7 @@ Vue.component("product-tabs",{
                 </ul>
             </div>
 
-            <product-review  v-show="selectedTab === 'Make a Review'"
-            @review-submitted="addReview"></product-review>
+            <product-review  v-show="selectedTab === 'Make a Review'"></product-review>
 
 
         </div>
